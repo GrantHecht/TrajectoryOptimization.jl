@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+TrajectoryOptimization = "de68b86c-4a3c-4a7c-9ee7-eeb03bb818e4"
