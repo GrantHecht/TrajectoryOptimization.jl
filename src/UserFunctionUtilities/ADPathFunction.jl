@@ -2,7 +2,6 @@
 # Path function wrapper that uses automatic differentiation to 
 # compute jacobian matricies
 mutable struct ADPathFunction{type, PFT<:Function, SJC, CJC, STJC, TJC} <: PathFunction{type}
-
     # User defined function
     func!::PFT # SHould be of the form f!(out, x, u, p, t)
 
@@ -31,7 +30,6 @@ mutable struct ADPathFunction{type, PFT<:Function, SJC, CJC, STJC, TJC} <: PathF
     controlJC::CJC
     staticJC::STJC
     timeJC::TJC
-
 end
 
 # To be fast, need to pass in number of states, controls, and static parameters
@@ -69,7 +67,7 @@ function ADPathFunction(type::FunctionType, func!::Function, nFuncs::Int, nState
         staticSP = sparse(Matrix{Bool}(undef, (0, 0)))
         staticJC = nothing
     end
-    timeSP = jacobian_sparsity((y,t)->func!(y,states,controls,static,t[1]),out,time)
+    timeSP = jacobian_sparsity((y,t)->func!(y,states,controls,static,t[1]),out,rand(1))
     timeJC = ForwardDiff.JacobianConfig((y,t)->func!(y,states,controls,static,t[1]),
         out, [0.0], ForwardDiff.Chunk{1}())
 
@@ -78,7 +76,7 @@ function ADPathFunction(type::FunctionType, func!::Function, nFuncs::Int, nState
     CJC     = typeof(controlJC)
     STJC    = typeof(staticJC)
     TJC     = typeof(timeJC)
-    ADPathFunction{type,PFT,SJC,CJC,STJC,TJC}(func!,nFuncs,nStates,nControls,nStatic,
+    ADPathFunction{typeof(type),PFT,SJC,CJC,STJC,TJC}(func!,nFuncs,nStates,nControls,nStatic,
         Vector{String}(undef, 0),out,stateSP,controlSP,staticSP,timeSP,stateJC,controlJC,staticJC,timeJC)
 end
 

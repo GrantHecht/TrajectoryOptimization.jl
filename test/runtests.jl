@@ -1,6 +1,6 @@
 using TrajectoryOptimization
-using Test
+using Test, SafeTestsets
 
-@testset "TrajectoryOptimization.jl" begin
-    # Write your tests here.
+@time begin
+    @time @safetestset "Path Functions" begin include("pathFunctionTests.jl") end
 end

@@ -16,7 +16,7 @@ function EvaluateFunction(pf::PathFunction,
     return nothing
 end
 
-function GetNumberOfFunction(pf::PathFunction)
+function GetNumberOfFunctions(pf::PathFunction)
     return pf.nFuncs
 end
 

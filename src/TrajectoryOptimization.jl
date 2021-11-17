@@ -10,10 +10,12 @@ using Symbolics: jacobian_sparsity
 
 # Utilities
 include("Utilities/typeFlags.jl")
+export Dynamics, Cost, Algebraic, AllFunctions # Function type flags 
 
 # User function utilities
 include("UserFunctionUtilities/PathFunction.jl")
 include("UserFunctionUtilities/ADPathFunction.jl")
+export ADPathFunction
 
 # Conditionally load Snopt
 function __init__()
