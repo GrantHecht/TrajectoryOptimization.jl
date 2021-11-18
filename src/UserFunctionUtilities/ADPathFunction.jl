@@ -88,8 +88,11 @@ function EvaluateJacobian(jacType::State,
                           control::AbstractVector,
                           static::AbstractVector,
                           time::AbstractFloat) where {type,PFT,SJC<:ForwardDiff.JacobianConfig,CJC,STJC,TJC}
-    ForwardDiff.jacobian!(jac, (y,x)->fp.func!(y,x,control,static,time),
-        fp.fOut, state, fp.stateJC, Val{false}())
+    # Only evaluate if Jacobian has nonzero entries
+    if nnz(fp.stateSP) > 0
+        ForwardDiff.jacobian!(jac, (y,x)->fp.func!(y,x,control,static,time),
+            fp.fOut, state, fp.stateJC, Val{false}())
+    end
     return nothing
 end
 
@@ -110,8 +113,10 @@ function EvaluateJacobian(jacType::Control,
                           control::AbstractVector,
                           static::AbstractVector,
                           time::AbstractFloat) where {type,PFT,SJC,CJC<:ForwardDiff.JacobianConfig,STJC,TJC}
-    ForwardDiff.jacobian!(jac, (y,u)->fp.func!(y,state,u,static,time),
-        fp.fOut, control, fp.controlJC, Val{false}())
+    if nnz(fp.controlSP) > 0
+        ForwardDiff.jacobian!(jac, (y,u)->fp.func!(y,state,u,static,time),
+            fp.fOut, control, fp.controlJC, Val{false}())
+    end
     return nothing
 end
 
@@ -132,8 +137,10 @@ function EvaluateJacobian(jacType::Static,
                           control::AbstractVector,
                           static::AbstractVector,
                           time::AbstractFloat) where {type,PFT,SJC,CJC,STJC<:ForwardDiff.JacobianConfig,TJC}
-    ForwardDiff.jacobian!(jac, (y,p)->fp.func!(y,state,control,p,time),
-        fp.fOut, static, fp.staticJC, Val{false}())
+    if nnz(fp.stateSP) > 0
+        ForwardDiff.jacobian!(jac, (y,p)->fp.func!(y,state,control,p,time),
+            fp.fOut, static, fp.staticJC, Val{false}())
+    end
     return nothing
 end
 
@@ -154,7 +161,9 @@ function EvaluateJacobian(jacType::Time,
                           control::AbstractVector,
                           static::AbstractVector,
                           time::AbstractFloat) where {type,PFT,SJC,CJC,STJC,TJC}
-    ForwardDiff.jacobian!(jac, (y,t)->fp.func!(y,state,control,static,t[1]),
-        fp.fOut, @SVector([time]), fp.timeJC, Val{false}())
+    if nnz(fp.timeSP) > 0
+        ForwardDiff.jacobian!(jac, (y,t)->fp.func!(y,state,control,static,t[1]),
+            fp.fOut, @SVector([time]), fp.timeJC, Val{false}())
+    end
     return nothing
 end

@@ -2,6 +2,19 @@
 # Abstract path function
 abstract type PathFunction{type <: FunctionType} end
 
+# PathFunction contructors
+function PathFunction(type::FunctionType, func!::Function, nFuncs::Int, nStates::Int, nControls::Int, nStatic::Int)
+    return ADPathFunction(type, func!, nFuncs, nStates, nControls, nStatic)
+end
+function PathFunction(type::FunctionType, func!::Function, stateJac!::Union{Function,Nothing}, 
+    controlJac!::Union{Function,Nothing}, staticJac!::Union{Function,Nothing}, timeJac!::Union{Function,Nothing}, 
+    nFuncs::Int, nStates::Int, nControls::Int, nStatic::Int,
+    stateSP::AbstractVecOrMat, controlSP::AbstractVecOrMat, staticSP::AbstractVecOrMat, timeSP::AbstractVecOrMat)
+    return AnalyticPathFunction(type, func!, stateJac!, controlJac!, staticJac!, timeJac!,
+        nFuncs, nStates, nControls, nStatic, stateSP, controlSP, staticSP, timeSP)
+end
+
+# Get the type of path function
 function GetFunctionType(pf::PathFunction{type}) where {type}
     return type
 end

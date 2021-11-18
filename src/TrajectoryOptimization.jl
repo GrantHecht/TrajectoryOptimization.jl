@@ -10,12 +10,14 @@ using Symbolics: jacobian_sparsity
 
 # Utilities
 include("Utilities/typeFlags.jl")
+include("Utilities/sparseMatrixUtils.jl")
 export Dynamics, Cost, Algebraic, AllFunctions # Function type flags 
 
 # User function utilities
 include("UserFunctionUtilities/PathFunction.jl")
 include("UserFunctionUtilities/ADPathFunction.jl")
-export ADPathFunction
+include("UserFunctionUtilities/AnalyticPathFunction.jl")
+export PathFunction
 
 # Conditionally load Snopt
 function __init__()
